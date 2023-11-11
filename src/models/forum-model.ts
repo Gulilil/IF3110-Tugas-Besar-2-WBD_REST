@@ -3,11 +3,13 @@ import {
     Column,
     Entity,
     JoinColumn,
+    OneToMany,
     ManyToOne,
     PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { User } from "./user-model";
+import { Post } from "./post-model";
 
 @Entity()
 export class Forum extends BaseEntity {
