@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { jwtConfig } from "../config/jwt-config";
 
 export interface AuthToken {
-    userID: number;
+    id: number;
 }
 
 export interface AuthRequest extends Request {

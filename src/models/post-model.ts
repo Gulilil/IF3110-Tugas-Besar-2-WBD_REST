@@ -1,10 +1,12 @@
 import {
     BaseEntity,
     Column,
+    CreateDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
     PrimaryGeneratedColumn,
+    UpdateDateColumn,
 } from "typeorm";
 
 import { User } from "./user-model";
@@ -13,25 +15,31 @@ import { Forum } from "./forum-model";
 @Entity()
 export class Post extends BaseEntity {
     @PrimaryGeneratedColumn()
-    postID: number;
+    id: number;
+    
+    @Column()
+    post_id: number;
 
     @Column()
-    forumID: number;
+    forum_id: number;
 
     @Column()
-    authorID: number;
+    author_id: number;
 
-    @Column()
+    @CreateDateColumn()
     created_at: Date;
+
+    @UpdateDateColumn()
+    updated_at: Date;
 
     @Column()
     content: string;
 
-    @ManyToOne(() => User, (user) => user.userID, { cascade: true })
-    @JoinColumn({ name: "authorID" })
+    @ManyToOne(() => User, (user) => user.id, { cascade: true })
+    @JoinColumn({ name: "author_id" })
     user: User;
 
-    @ManyToOne(() => Forum, (forum) => forum.forumID, { cascade: true })
-    @JoinColumn({ name: "forumID" })
+    @ManyToOne(() => Forum, (forum) => forum.id, { cascade: true })
+    @JoinColumn({ name: "id" })
     forum: Forum;
 }

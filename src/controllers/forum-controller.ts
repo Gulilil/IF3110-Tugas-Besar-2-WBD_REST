@@ -24,7 +24,7 @@ export class ForumController {
             // Buat forum baru
             const forum = new Forum();
             forum.title = title;
-            forum.authorID = token.userID;
+            forum.author_id = token.id;
             forum.created_at = new Date();
             forum.post_count = 0;
 
@@ -54,9 +54,9 @@ export class ForumController {
             }
     
             const forums = await Forum.createQueryBuilder("forum")
-                .select(["forum.forumID", "forum.title", "forum.created_at", "forum.post_count"])
-                .where("forum.authorID = :userID", {
-                    userID: token.userID,
+                .select(["forum.forum_id", "forum.title", "forum.created_at", "forum.post_count"])
+                .where("forum.author_id = :id", {
+                    id: token.id,
                 })
                 .getMany();
     
@@ -80,10 +80,10 @@ export class ForumController {
             }
 
             // Parse request param
-            const forumID = parseInt(req.params.id);
+            const forum_id = parseInt(req.params.id);
 
             const forum = await Forum.findOneBy({
-                forumID: forumID,
+                id: forum_id,
             });
 
             // Apabila tidak ditemukan ...
@@ -93,7 +93,7 @@ export class ForumController {
                 });
                 return;
             }
-            if (forum.authorID != token.userID) {
+            if (forum.author_id != token.id) {
                 res.status(StatusCodes.UNAUTHORIZED).json({
                     message: ReasonPhrases.UNAUTHORIZED,
                 });

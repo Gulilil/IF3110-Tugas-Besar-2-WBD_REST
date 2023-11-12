@@ -6,11 +6,11 @@ import { Post } from "../models/post-model";
 import { Follow } from "../models/follow-model";
 
 const generatePostgreHost = () => {
-    return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "postgres_db";
+    return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "localhost";
 };
 
 const generatePostgrePort = () => {
-    return process.env.POSTGRES_PORT ? +process.env.POSTGRES_PORT : 5432;
+    return process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT || "5432") : 5432;
 };
 
 const generatePostgreUsername = () => {
@@ -24,18 +24,19 @@ const generatePostgrePassword = () => {
 };
 
 const generatePostgreDatabase = () => {
-    return process.env.POSTGRES_DB ? process.env.POSTGRES_DB : "wbd_db";
+    return process.env.POSTGRES_DB ? process.env.POSTGRES_DB : "wbd_rest";
 };
 
+
 export const dataConfig: DataSourceOptions = {
-    type: "postgres",
-    host: generatePostgreHost(),
-    port: generatePostgrePort(),
-    username: generatePostgreUsername(),
-    password: generatePostgrePassword(),
-    database: generatePostgreDatabase(),
-    synchronize: true,
-    logging: true,
-    entities: [User, Forum, Post, Follow],
-    migrations: [],
+  type: "postgres",
+  host: generatePostgreHost(),
+  port: generatePostgrePort(),
+  username: generatePostgreUsername(),
+  password: generatePostgrePassword(),
+  database: generatePostgreDatabase(),
+  synchronize: true,
+  logging: true,
+  entities: [User, Forum, Post, Follow],
+  migrations: [],
 };

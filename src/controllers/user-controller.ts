@@ -35,7 +35,7 @@ export class UserController {
             }
 
             const user = await User.createQueryBuilder("user")
-                .select(["user.userID", "user.email", "user.password", 
+                .select(["user.id", "user.email", "user.password", 
                 "user.image", "user.linked", "user.follower_count"])
                 .where("user.username = :username", { username })
                 .getOne();
@@ -54,9 +54,9 @@ export class UserController {
             }
             
 
-            const { userID } = user;
+            const { id } = user;
             const payload: AuthToken = {
-                userID,
+                id
             };
             const token = jwt.sign(payload, jwtConfig.secret, {
                 expiresIn: jwtConfig.expiresIn,
@@ -106,9 +106,9 @@ export class UserController {
                 return;
             }
 
-            const { userID} = newUser;
+            const { id} = newUser;
             const payload: AuthToken = {
-                userID,
+                id,
             };
             const token = jwt.sign(payload, jwtConfig.secret, {
                 expiresIn: jwtConfig.expiresIn,
@@ -125,7 +125,7 @@ export class UserController {
         return async (req: Request, res: Response) => {
 
             const users = await User.createQueryBuilder("user")
-                .select(["user.userID", "user.name"])
+                .select(["user.id", "user.name"])
                 .getMany()
 
             res.status(StatusCodes.OK).json({
@@ -146,7 +146,7 @@ export class UserController {
             }
 
             res.status(StatusCodes.OK).json({
-                userID: token.userID,
+                id: token.id,
             });
         };
     }

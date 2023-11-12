@@ -16,12 +16,12 @@ export class PostController {
             }
 
             // Parse request body
-            const { forumID, content } = req.body;
+            const { forum_id, content } = req.body;
 
             // Buat post baru
             const post = new Post();
-            post.forumID = forumID;
-            post.authorID = token.userID;
+            post.forum_id = forum_id;
+            post.author_id = token.id;
             post.created_at = new Date();
             post.content = content;
 
@@ -52,8 +52,8 @@ export class PostController {
     
             const posts = await Post.createQueryBuilder("post")
                 .select(["post.postID", "post.forumID", "post.created_at", "post.content"])
-                .where("post.authorID = :userID", {
-                    userID: token.userID,
+                .where("post.author_id = :id", {
+                    id: token.id,
                 })
                 .getMany();
     
@@ -78,7 +78,7 @@ export class PostController {
             const forumID = parseInt(req.params.id);
     
             const posts = await Post.createQueryBuilder("post")
-                .select(["post.postID", "post.authorID", "post.created_at", "post.content"])
+                .select(["post.postID", "post.author_id", "post.created_at", "post.content"])
                 .where("post.forumID = :forumID", {
                     forumID: forumID,
                 })
@@ -102,10 +102,10 @@ export class PostController {
             }
 
             // Parse request param
-            const postID = parseInt(req.params.id);
+            const post_id = parseInt(req.params.id);
 
             const post = await Post.findOneBy({
-                postID: postID,
+                id: post_id,
             });
 
             // Apabila tidak ditemukan ...
@@ -115,7 +115,7 @@ export class PostController {
                 });
                 return;
             }
-            if (post.authorID != token.userID) {
+            if (post.author_id != token.id) {
                 res.status(StatusCodes.UNAUTHORIZED).json({
                     message: ReasonPhrases.UNAUTHORIZED,
                 });

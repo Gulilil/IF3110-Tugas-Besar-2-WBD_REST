@@ -21,13 +21,13 @@ export class FollowController {
 
             // Parse request
             const followeeId = parseInt(req.params.followeeId);
-            if (token.userID === followeeId) {
+            if (token.id === followeeId) {
                 return res.status(StatusCodes.BAD_REQUEST).json({ message: ReasonPhrases.BAD_REQUEST });
             }
 
             // Check if already followed
             const existingFollow = await Follow.findOneBy({
-                follower_id: token.userID,
+                follower_id: token.id,
                 followee_id: followeeId,
             });
 
@@ -36,14 +36,14 @@ export class FollowController {
             }
 
             // Check if followee exists
-            const followee = await User.findOneBy({ userID: followeeId });
+            const followee = await User.findOneBy({ id: followeeId });
             if (!followee) {
                 return res.status(StatusCodes.NOT_FOUND).json({ message: ReasonPhrases.NOT_FOUND });
             }
 
             // Create new follow
             const follow = new Follow();
-            follow.follower_id = token.userID;
+            follow.follower_id = token.id;
             follow.followee_id = followeeId;
             
             // Save the new follow relationship
@@ -75,7 +75,7 @@ export class FollowController {
             const followeeId = parseInt(req.params.followeeId);
 
             const follow = await Follow.findOneBy({
-                follower_id: token.userID,
+                follower_id: token.id,
                 followee_id: followeeId,
             });
     
@@ -114,8 +114,8 @@ export class FollowController {
     
             const followers = await Follow.createQueryBuilder("follow")
                 .select(["follow.follower_id"])
-                .where("followee_id = :userID", {
-                    userID: token.userID,
+                .where("followee_id = :id", {
+                    id: token.id,
                 })
                 .getMany();
     
@@ -137,8 +137,8 @@ export class FollowController {
     
             const followees = await Follow.createQueryBuilder("follow")
                 .select(["follow.followee_id"])
-                .where("follower_id = :userID", {
-                    userID: token.userID,
+                .where("follower_id = :id", {
+                    id: token.id,
                 })
                 .getMany();
     

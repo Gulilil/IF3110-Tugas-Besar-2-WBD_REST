@@ -6,6 +6,7 @@ import {
     OneToMany,
     ManyToOne,
     PrimaryGeneratedColumn,
+    CreateDateColumn,
 } from "typeorm";
 
 import { User } from "./user-model";
@@ -14,22 +15,22 @@ import { Post } from "./post-model";
 @Entity()
 export class Forum extends BaseEntity {
     @PrimaryGeneratedColumn()
-    forumID: number;
+    id: number;
 
     @Column()
     title: string;
 
     @Column()
-    authorID: number;
+    author_id: number;
 
-    @Column()
+    @CreateDateColumn()
     created_at: Date;
 
     @Column()
     post_count: number;
 
-    @ManyToOne(() => User, (user) => user.userID, { cascade: true })
-    @JoinColumn({ name: "authorID" })
+    @ManyToOne(() => User, (user) => user.id, { cascade: true })
+    @JoinColumn({ name: "author_id" })
     user: User;
 
     @OneToMany(() => Post, (post) => post.forum)
