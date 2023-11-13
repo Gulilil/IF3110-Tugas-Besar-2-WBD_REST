@@ -6,7 +6,7 @@ import "reflect-metadata";
 
 import { serverConfig } from "./config/server-config";
 import { dataConfig } from "./config/data-config";
-import { UserRoute } from "./routes/user-route";
+import { ClientRoute } from "./routes/client-route";
 import { ForumRoute } from "./routes/forum-route";
 import { PostRoute } from "./routes/post-route";
 import { FollowRoute } from "./routes/follow-route";
@@ -18,7 +18,7 @@ export class App {
   server: Express;
 
   constructor() {
-    const userRoute = new UserRoute();
+    const clientRoute = new ClientRoute();
     const forumRoute = new ForumRoute();
     const postRoute = new PostRoute();
     const followRoute = new FollowRoute();
@@ -35,7 +35,7 @@ export class App {
       "/api",
       express.json(),
       express.urlencoded({ extended: true }),
-      userRoute.getRoute(),
+      clientRoute.getRoute(),
       forumRoute.getRoute(),
       postRoute.getRoute(),
       followRoute.getRoute()

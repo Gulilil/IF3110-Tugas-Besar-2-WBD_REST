@@ -12,7 +12,7 @@ import { Forum } from "./forum-model";
 import { Post } from "./post-model";
 
 @Entity()
-export class User extends BaseEntity {
+export class Client extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 

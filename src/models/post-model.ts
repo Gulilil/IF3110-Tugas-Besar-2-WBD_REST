@@ -1,45 +1,45 @@
 import {
-    BaseEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    JoinColumn,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
-import { User } from "./user-model";
+import { Client } from "./client-model";
 import { Forum } from "./forum-model";
 
 @Entity()
 export class Post extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @Column()
-    post_id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    forum_id: number;
+  @Column()
+  post_id: number;
 
-    @Column()
-    author_id: number;
+  @Column()
+  forum_id: number;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @Column()
+  author_id: number;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-    @Column()
-    content: string;
+  @UpdateDateColumn()
+  updated_at: Date;
 
-    @ManyToOne(() => User, (user) => user.id, { cascade: true })
-    @JoinColumn({ name: "author_id" })
-    user: User;
+  @Column()
+  content: string;
 
-    @ManyToOne(() => Forum, (forum) => forum.id, { cascade: true })
-    @JoinColumn({ name: "forum_id" })
-    forum: Forum;
+  @ManyToOne(() => Client, (client) => client.id, {onDelete: "CASCADE", onUpdate:"CASCADE"})
+  @JoinColumn({ name: "author_id" })
+  client: Client;
+
+  @ManyToOne(() => Forum, (forum) => forum.id, {onDelete: "CASCADE", onUpdate:"CASCADE"})
+  @JoinColumn({ name: "forum_id" })
+  forum: Forum;
 }

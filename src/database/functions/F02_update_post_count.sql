@@ -1,4 +1,4 @@
-CREATE FUNCTION post_count_update()
+CREATE OR REPLACE FUNCTION post_count_update()
 RETURNS TRIGGER
 AS $$
 BEGIN
@@ -10,7 +10,7 @@ BEGIN
                 JOIN post AS p ON f.id = p.forum_id
                 WHERE p.forum_id = NEW.forum_id
             )
-    WHERE f.id = NEW.forum_id;
+    WHERE forum.id = NEW.forum_id;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

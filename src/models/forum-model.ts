@@ -1,38 +1,38 @@
 import {
-    BaseEntity,
-    Column,
-    Entity,
-    JoinColumn,
-    OneToMany,
-    ManyToOne,
-    PrimaryGeneratedColumn,
-    CreateDateColumn,
+  BaseEntity,
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
 } from "typeorm";
 
-import { User } from "./user-model";
+import { Client } from "./client-model";
 import { Post } from "./post-model";
 
 @Entity()
 export class Forum extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    title: string;
+  @Column()
+  title: string;
 
-    @Column()
-    author_id: number;
+  @Column()
+  author_id: number;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 
-    @Column()
-    post_count: number;
+  @Column()
+  post_count: number;
 
-    @ManyToOne(() => User, (user) => user.id, { cascade: true })
-    @JoinColumn({ name: "author_id" })
-    user: User;
+  @ManyToOne(() => Client, (client) => client.id, {onDelete: "CASCADE", onUpdate:"CASCADE"})
+  @JoinColumn({ name: "author_id" })
+  client: Client;
 
-    // @OneToMany(() => Post, (post) => post.forum)
-    // posts: Post[];
+  // @OneToMany(() => Post, (post) => post.forum)
+  // posts: Post[];
 }

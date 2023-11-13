@@ -1,32 +1,33 @@
 import { DataSourceOptions } from "typeorm";
 
-import { User } from "../models/user-model";
+import { Client } from "../models/client-model";
 import { Forum } from "../models/forum-model";
 import { Post } from "../models/post-model";
 import { Follow } from "../models/follow-model";
 
 const generatePostgreHost = () => {
-    return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "localhost";
+  return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "localhost";
 };
 
 const generatePostgrePort = () => {
-    return process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT || "5432") : 5432;
+  return process.env.POSTGRES_PORT
+    ? parseInt(process.env.POSTGRES_PORT || "5432")
+    : 5432;
 };
 
 const generatePostgreUsername = () => {
-    return process.env.POSTGRES_USER ? process.env.POSTGRES_USER : "postgres";
+  return process.env.POSTGRES_USER ? process.env.POSTGRES_USER : "postgres";
 };
 
 const generatePostgrePassword = () => {
-    return process.env.POSTGRES_PASSWORD
-        ? process.env.POSTGRES_PASSWORD
-        : "postgres";
+  return process.env.POSTGRES_PASSWORD
+    ? process.env.POSTGRES_PASSWORD
+    : "postgres";
 };
 
 const generatePostgreDatabase = () => {
-    return process.env.POSTGRES_DB ? process.env.POSTGRES_DB : "wbd_rest";
+  return process.env.POSTGRES_DB ? process.env.POSTGRES_DB : "wbd_rest";
 };
-
 
 export const dataConfig: DataSourceOptions = {
   type: "postgres",
@@ -37,6 +38,6 @@ export const dataConfig: DataSourceOptions = {
   database: generatePostgreDatabase(),
   synchronize: true,
   logging: true,
-  entities: [User, Forum, Post, Follow],
+  entities: [Client, Forum, Post, Follow],
   migrations: [],
 };

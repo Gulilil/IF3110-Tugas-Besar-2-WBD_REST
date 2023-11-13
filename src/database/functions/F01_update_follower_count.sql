@@ -1,16 +1,16 @@
-CREATE FUNCTION follower_count_update()
+CREATE OR REPLACE FUNCTION follower_count_update()
 RETURNS TRIGGER
 AS $$
 BEGIN
-    UPDATE user
+    UPDATE client
     SET follower_count =
             (
                 SELECT count(*)
-                FROM user AS u
-                JOIN follow AS f ON f.followee_id = u.id
+                FROM client AS c
+                JOIN follow AS f ON f.followee_id = c.id
                 WHERE f.followee_id = NEW.followee_id
             )
-    WHERE u.id = NEW.followee_id;
+    WHERE client.id = NEW.followee_id;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;

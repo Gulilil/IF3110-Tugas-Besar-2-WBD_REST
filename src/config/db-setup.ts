@@ -1,4 +1,4 @@
-import { Pool } from "pg";
+import { Client, Pool } from "pg";
 import Database from "../models/database-model";
 
 const pg = require('pg');
@@ -15,27 +15,32 @@ function getFiles(path: string){
   return res;
 }
 
+function delay(time : number){
+  return new Promise (resolve => setTimeout(resolve, time));
+} 
+
+function executeSQLFile(path : string){
+  const db = new Database;
+  const q = fs.readFileSync(path).toString();
+  // console.log(q);
+  db.executeTransaction( async (client: Client) => {
+    await client.query(q);
+    await delay(1500);
+  })
+}
+
 export function DatabaseSetup() {
+
+  // Dummy
+  const db = new Database;
+
   const dbFunctions : string[] = getFiles(path.join("/app/src/database/functions"));
   for (const func of dbFunctions){
-    const db = new Database;
-    const pool = db.getPool();
-    const q = fs.readFileSync(func).toString();
-    console.log(q)
-    async () => {
-      const result : any = await pool
-        .query(q);
-    }
-
+    executeSQLFile(func);
   }
+
   const dbTriggers : string[] = getFiles(path.join("/app/src/database/triggers"));
   for (const trg of dbTriggers){
-    const db = new Database;
-    const pool = db.getPool();
-    const q = fs.readFileSync(trg).toString();
-    console.log(q)
-    async () => {
-      const result : any = await pool.query(q);
-    }
+    executeSQLFile(trg);
   }
 }
