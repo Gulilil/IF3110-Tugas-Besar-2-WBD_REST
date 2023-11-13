@@ -40,6 +40,6 @@ export class Post extends BaseEntity {
     user: User;
 
     @ManyToOne(() => Forum, (forum) => forum.id, { cascade: true })
-    @JoinColumn({ name: "id" })
+    @JoinColumn({ name: "forum_id" })
     forum: Forum;
 }

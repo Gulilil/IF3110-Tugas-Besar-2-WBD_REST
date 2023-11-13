@@ -2,10 +2,11 @@ import {
     BaseEntity,
     Column,
     Entity,
-    ManyToMany,
+    ManyToOne,
     JoinTable,
     PrimaryGeneratedColumn,
     JoinColumn,
+    OneToOne,
 } from "typeorm";
 
 import { User } from "./user-model";
@@ -20,6 +21,14 @@ export class Follow extends BaseEntity {
 
     @Column()
     follower_id: number;
+
+    @ManyToOne(() => User, (user) => user.id)
+    @JoinColumn({ name: "follower_id"})
+    Follower: User[];
+
+    @ManyToOne(() => User, (user) => user.id)
+    @JoinColumn({name : "followee_id"})
+    Followee: User[];
 
     // @ManyToMany(() => User)
     // @JoinTable({

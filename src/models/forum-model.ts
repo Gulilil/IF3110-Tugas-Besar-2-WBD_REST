@@ -33,6 +33,6 @@ export class Forum extends BaseEntity {
     @JoinColumn({ name: "author_id" })
     user: User;
 
-    @OneToMany(() => Post, (post) => post.forum)
-    posts: Post[];
+    // @OneToMany(() => Post, (post) => post.forum)
+    // posts: Post[];
 }

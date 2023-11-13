@@ -1,22 +1,41 @@
+import { Pool } from "pg";
+import Database from "../models/database-model";
+
 const pg = require('pg');
 const fs = require('fs');
+const path = require('path')
 
 function getFiles(path: string){
   const res: string[] = [];
-  fs.readdir(path, function (e : any, files : any){
-    if (e){
-      return console.log("Unable to scan directory: "+ e);
-    } else {
-      files.foreEach(function (file : string) {
-        res.push(file);
-      })
-    }
-  })
+  const fileList = fs.readdirSync(path);
+  for (const file of fileList){
+    const fileName = `${path}/${file}`;
+    res.push(fileName);
+  }
   return res;
 }
 
 export function DatabaseSetup() {
-  const tables : string[] = getFiles("../database/tables");
-  const functions : string[] = getFiles("../database/functions");
-  const triggers : string[] = getFiles("../database/triggers");
+  const dbFunctions : string[] = getFiles(path.join("/app/src/database/functions"));
+  for (const func of dbFunctions){
+    const db = new Database;
+    const pool = db.getPool();
+    const q = fs.readFileSync(func).toString();
+    console.log(q)
+    async () => {
+      const result : any = await pool
+        .query(q);
+    }
+
+  }
+  const dbTriggers : string[] = getFiles(path.join("/app/src/database/triggers"));
+  for (const trg of dbTriggers){
+    const db = new Database;
+    const pool = db.getPool();
+    const q = fs.readFileSync(trg).toString();
+    console.log(q)
+    async () => {
+      const result : any = await pool.query(q);
+    }
+  }
 }

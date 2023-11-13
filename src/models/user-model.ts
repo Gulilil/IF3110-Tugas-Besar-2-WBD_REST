@@ -29,9 +29,7 @@ export class User extends BaseEntity {
     @Column()
     password: string;
 
-    @Column({
-        unique: true,
-    })
+    @Column({nullable : true})
     image: string;
 
     @Column({
@@ -42,20 +40,20 @@ export class User extends BaseEntity {
     @Column()
     follower_count: number;
 
-    @OneToMany(() => Forum, (forum) => forum.user)
-    forums: Forum[];
+    // @OneToMany(() => Forum, (forum) => forum.user)
+    // forums: Forum[];
 
-    @OneToMany(() => Post, (post) => post.user)
-    posts: Post[];
+    // @OneToMany(() => Post, (post) => post.user)
+    // posts: Post[];
 
-    @ManyToMany(() => User, (user) => user.followers)
-    @JoinTable({
-      name: 'follow', // The name of the join table
-      joinColumn: { name: 'follower_id', referencedColumnName: 'id' },
-      inverseJoinColumn: { name: 'followee_id', referencedColumnName: 'id' }
-    })
-    following: User[];
+    // @ManyToMany(() => User, (user) => user.followers)
+    // @JoinTable({
+    //   name: 'follow', // The name of the join table
+    //   joinColumn: { name: 'follower_id', referencedColumnName: 'id' },
+    //   inverseJoinColumn: { name: 'followee_id', referencedColumnName: 'id' }
+    // })
+    // following: User[];
   
-    @ManyToMany(() => User, (user) => user.following)
-    followers: User[];
+    // @ManyToMany(() => User, (user) => user.following)
+    // followers: User[];
 }

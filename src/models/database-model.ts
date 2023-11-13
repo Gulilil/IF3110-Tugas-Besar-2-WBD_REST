@@ -1,9 +1,17 @@
-import dotenv from 'dotenv';
-import { Pool, PoolClient} from "pg";
+import dotenv from "dotenv";
+import { Pool, PoolClient } from "pg";
 
 class Database {
-  private pool : Pool;
-  private client : PoolClient | undefined;
+  private pool: Pool;
+  private client: PoolClient | undefined;
+
+  public getPool(): Pool {
+    return this.pool;
+  }
+
+  public getClient() : PoolClient | undefined{
+    return this.client;
+  }
 
   constructor() {
     const dbUsername = process.env.POSTGRES_USER;
@@ -11,16 +19,17 @@ class Database {
     const dbName = process.env.POSTGRES_DB;
     const dbHost = process.env.POSTGRES_HOST;
     const dbPort = parseInt(process.env.POSTGRES_PORT || "5432");
-    
-    this.pool = new Pool ({
+
+    this.pool = new Pool({
       user: dbUsername,
       host: dbHost,
-      database : dbName,
-      password : dbPassword,
-      port : dbPort,
+      database: dbName,
+      password: dbPassword,
+      port: dbPort,
       max: 20,
-      idleTimeoutMillis: 45000,
-    })
+      idleTimeoutMillis: 30000,
+    });
   }
-
 }
+
+export default Database;
