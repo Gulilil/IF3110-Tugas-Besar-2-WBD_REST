@@ -1,8 +1,4 @@
-import { DataSource, Repository } from "typeorm";
-import { Client } from "../models/client-model";
-import { Follow } from "../models/follow-model";
-import { Forum } from "../models/forum-model";
-import { Post } from "../models/post-model";
+import { executeQuery } from "./db-setup";
 
 export const LoremIpsum_3Paragraph = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Urna molestie at elementum eu. Aliquam sem fringilla ut morbi tincidunt augue. Eget velit aliquet sagittis id. Aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Odio ut enim blandit volutpat maecenas volutpat blandit aliquam etiam. A diam maecenas sed enim ut. Nisl purus in mollis nunc sed. Elit scelerisque mauris pellentesque pulvinar pellentesque. Dolor purus non enim praesent elementum facilisis leo vel fringilla. Amet risus nullam eget felis. Mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Congue eu consequat ac felis. Egestas maecenas pharetra convallis posuere morbi leo urna molestie. Ipsum a arcu cursus vitae congue. Vel quam elementum pulvinar etiam non quam lacus suspendisse. Sagittis eu volutpat odio facilisis mauris. Quis auctor elit sed vulputate mi sit amet mauris. Sodales ut etiam sit amet nisl purus in. Egestas pretium aenean pharetra magna ac placerat vestibulum lectus.
 
@@ -22,77 +18,89 @@ const FORUM_AMOUNT = 40;
 const POST_AMOUNT = FORUM_AMOUNT* MULTIPLIER;
 
 
-function seedClient(){
-
+export function seedClient(){
+  let q = `INSERT INTO client (email, username, password, image, linked, follower_count) VALUES `;
   for (let i = 1; i <= CLIENT_AMOUNT; i++){
-    let c = new Client();
-    // c.id = i;
-    c.email = "client"+(i.toString())+"@gmail.com";
-    c.username = "client"+(i.toString());
-    c.password = "password";
-    c.image = "";
-    c.linked = false;
-    c.follower_count = 0;
+    let email = "client"+(i.toString())+"@gmail.com";
+    let username = "client"+(i.toString());
+    let password = "password";
+    let image = "";
+    let linked = false;
+    let follower_count = 0;
 
-    async () => {
-      await c.save();
-    }
-  }
-}
-
-function seedFollow(){
-  for (let i = 1; i <= FOLLOW_AMOUNT; i++){
-    let f = new Follow();
-    // f.id = i;
-    f.followee_id = Math.floor(i/2)+1;
-    f.follower_id = i;
-    if (f.followee_id == f.follower_id){
-      f.followee_id = FOLLOW_AMOUNT - i;
-    }
-
-    async () => {
-      await f.save();
-    }
-  }
-}
-
-function seedForum(){
-  for (let i = 1;i <= FORUM_AMOUNT; i++){
-    let f = new Forum();
-    // f.id = i;
-    f.title = LoremIpsum_1Sentence;
-    f.author_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
-    f.created_at = (new Date());
-    f.post_count = 0;
-
-    async () => {
-      await f.save();
-    }
-  }
-}
-
-function seedPost(){
-  for (let i = 1;i <= POST_AMOUNT; i++){
-    let p = new Post();
-    // p.id = i;
-    p.author_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
-    p.post_id = Math.ceil(i/MULTIPLIER);
-    p.forum_id = i % MULTIPLIER;
-    p.created_at = new Date();
-    p.updated_at = new Date();
-    let temp = Math.floor(Math.random() * 3);
-    if (temp == 0){
-      p.content = LoremIpsum_1Paragraph;
-    } else if (temp == 1){
-      p.content = LoremIpsum_1Sentence;
+    q += `('${email}', '${username}', '${password}', '${image}', ${linked}, ${follower_count})`;
+    if (i == CLIENT_AMOUNT){
+      q += `;`;
     } else {
-      p.content = LoremIpsum_3Paragraph;
-    }
-
-    async () => {
-      await p.save();
+      q +=`, `;
     }
   }
+  executeQuery(q);
+}
+
+export function seedFollow(){
+  let q = `INSERT INTO follow (followee_id, follower_id) VALUES `
+  for (let i = 1; i <= FOLLOW_AMOUNT; i++){
+    let followee_id = Math.ceil(i/MULTIPLIER);
+    let follower_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
+    while (followee_id == follower_id){
+      follower_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
+    }
+
+    q += `(${followee_id}, ${follower_id})`
+    if (i == FOLLOW_AMOUNT){
+      q += `;`;
+    } else {
+      q += `, `;
+    }
+  }
+  executeQuery(q);
+}
+
+export function seedForum(){
+  let q = `INSERT INTO forum (title, author_id, created_at, post_count) VALUES `
+  for (let i = 1;i <= FORUM_AMOUNT; i++){
+    let title = LoremIpsum_1Sentence;
+    let author_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
+    let created_at = (new Date()).toISOString().slice(0, 19).replace('T', ' ');
+    let post_count = 0;
+
+    q += `('${title}', ${author_id}, '${created_at}', ${post_count})`;
+    if (i == FORUM_AMOUNT){
+      q += `;`;
+    } else {
+      q += `, `;
+    }
+  }
+  executeQuery(q);
+}
+
+export function seedPost(){
+  let q = `INSERT INTO post (post_id, forum_id, author_id, created_at, updated_at, content) VALUES `
+  for (let i = 1;i <= POST_AMOUNT; i++){
+    let author_id = Math.ceil(Math.random()*CLIENT_AMOUNT);
+    let forum_id =  Math.ceil(i/MULTIPLIER);
+    let post_id = (i % MULTIPLIER) + 1;
+    let created_at = (new Date()).toISOString().slice(0, 19).replace('T', ' ');
+    let updated_at = (new Date()).toISOString().slice(0, 19).replace('T', ' ');
+    let temp = Math.floor(Math.random() * 3);
+    let content = "";
+    if (temp == 0){
+      content = LoremIpsum_1Paragraph;
+    } else if (temp == 1){
+      content = LoremIpsum_1Sentence;
+    } else {
+      content = LoremIpsum_3Paragraph;
+    }
+
+    q += `(${post_id}, ${forum_id}, ${author_id}, '${created_at}', '${updated_at}', '${content}')`;
+    if (i == POST_AMOUNT){
+      q += `;`;
+    } else {
+      q += `, `;
+    }
+  }
+  executeQuery(q);
 }
 
 export function seedDatabase(){
@@ -100,5 +108,4 @@ export function seedDatabase(){
   seedFollow();
   seedForum();
   seedPost();
-  console.log("Successfully seed database");
 }

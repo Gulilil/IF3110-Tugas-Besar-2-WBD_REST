@@ -1,7 +1,6 @@
 import { Client, Pool } from "pg";
 import Database from "../models/database-model";
 
-const pg = require('pg');
 const fs = require('fs');
 const path = require('path')
 
@@ -25,7 +24,14 @@ function executeSQLFile(path : string){
   // console.log(q);
   db.executeTransaction( async (client: Client) => {
     await client.query(q);
-    await delay(1500);
+    await delay(20000);
+  });
+}
+
+export function executeQuery(q : string){
+  const db = new Database;
+  db.executeTransaction( async (client:Client) => {
+    client.query(q);
   })
 }
 

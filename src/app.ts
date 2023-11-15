@@ -49,10 +49,11 @@ export class App {
     this.dataSource
         .initialize()
         .then( void DatabaseSetup())
+        .then( void seedDatabase())
         .then(async () => {
             this.server.listen(serverConfig.port, () => {
                 console.log(
-                    `Server is running on port: ${serverConfig.port}`
+                    `Server is running on http://localhost:${serverConfig.port}/api`
                 );
             });
         })

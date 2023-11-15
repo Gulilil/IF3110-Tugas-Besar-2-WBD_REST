@@ -77,7 +77,8 @@ export class ClientController {
   store() {
     return async (req: Request, res: Response) => {
       const { email, username, image, password }: StoreRequest = req.body;
-      if (!username || !image || !password) {
+      console.log(email, username, image, password);
+      if (!username || !password) {
         res.status(StatusCodes.BAD_REQUEST).json({
           message: ReasonPhrases.BAD_REQUEST,
         });
