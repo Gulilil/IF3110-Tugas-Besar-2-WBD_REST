@@ -5,136 +5,237 @@ import { AuthRequest } from "../middlewares/authentication-middleware";
 import { Post } from "../models/post-model";
 
 export class PostController {
-    store() {
-        return async (req: Request, res: Response) => {
-            const { token } = req as AuthRequest;
-            if (!token) {
-                res.status(StatusCodes.UNAUTHORIZED).json({
-                    message: ReasonPhrases.UNAUTHORIZED,
-                });
-                return;
-            }
+  store() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
 
-            // Parse request body
-            const { forum_id, content } = req.body;
+      // Parse request body
+      const { forum_id, content } = req.body;
 
-            // Buat post baru
-            const post = new Post();
-            post.forum_id = forum_id;
-            post.author_id = token.id;
-            post.created_at = new Date();
-            post.content = content;
+      // Buat post baru
+      const post = new Post();
+      post.forum_id = forum_id;
+      post.author_id = token.id;
+      post.created_at = new Date();
+      post.content = content;
 
-            // Buat post
-            const newPost = await post.save();
-            if (!newPost) {
-                res.status(StatusCodes.BAD_REQUEST).json({
-                    message: ReasonPhrases.BAD_REQUEST,
-                });
-                return;
-            }
+      // Buat post
+      const newPost = await post.save();
+      if (!newPost) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+        });
+        return;
+      }
 
-            res.status(StatusCodes.CREATED).json({
-                message: ReasonPhrases.CREATED,
-            });
-        };
-    }
+      res.status(StatusCodes.CREATED).json({
+        message: ReasonPhrases.CREATED,
+      });
+    };
+  }
 
-    indexAuthor() {
-        return async (req: Request, res: Response) => {
-            const { token } = req as AuthRequest;
-            if (!token) {
-                res.status(StatusCodes.UNAUTHORIZED).json({
-                    message: ReasonPhrases.UNAUTHORIZED,
-                });
-                return;
-            }
-    
-            const posts = await Post.createQueryBuilder("post")
-                .select(["post.postID", "post.forumID", "post.created_at", "post.content"])
-                .where("post.author_id = :id", {
-                    id: token.id,
-                })
-                .getMany();
-    
-            res.status(StatusCodes.OK).json({
-                message: ReasonPhrases.OK,
-                data: posts,
-            });
-        };
-    }
+  indexAuthor() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
 
-    indexForum() {
-        return async (req: Request, res: Response) => {
-            const { token } = req as AuthRequest;
-            if (!token) {
-                res.status(StatusCodes.UNAUTHORIZED).json({
-                    message: ReasonPhrases.UNAUTHORIZED,
-                });
-                return;
-            }
+      const posts = await Post.createQueryBuilder("post")
+        .select([
+          "post.postID",
+          "post.forumID",
+          "post.created_at",
+          "post.content",
+        ])
+        .where("post.author_id = :id", {
+          id: token.id,
+        })
+        .getMany();
 
-            // Parse request param
-            const forumID = parseInt(req.params.id);
-    
-            const posts = await Post.createQueryBuilder("post")
-                .select(["post.postID", "post.author_id", "post.created_at", "post.content"])
-                .where("post.forumID = :forumID", {
-                    forumID: forumID,
-                })
-                .getMany();
-    
-            res.status(StatusCodes.OK).json({
-                message: ReasonPhrases.OK,
-                data: posts,
-            });
-        };
-    }    
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        data: posts,
+      });
+    };
+  }
 
-    delete() {
-        return async (req: Request, res: Response) => {
-            const { token } = req as AuthRequest;
-            if (!token) {
-                res.status(StatusCodes.UNAUTHORIZED).json({
-                    message: ReasonPhrases.UNAUTHORIZED,
-                });
-                return;
-            }
+  index() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
 
-            // Parse request param
-            const post_id = parseInt(req.params.id);
+      // Parse request param
+      const id = parseInt(req.params.id);
 
-            const post = await Post.findOneBy({
-                id: post_id,
-            });
+      const post = await Post.createQueryBuilder("post")
+        .select([
+          "post.postID",
+          "post.author_id",
+          "post.created_at",
+          "post.content",
+        ])
+        .where("post.id = :id", {
+          id: id,
+        })
+        .getOne();
+      
+      if (!post) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: "Invalid credentials",
+        });
+        return;
+      }
 
-            // Apabila tidak ditemukan ...
-            if (!post) {
-                res.status(StatusCodes.NOT_FOUND).json({
-                    message: ReasonPhrases.NOT_FOUND,
-                });
-                return;
-            }
-            if (post.author_id != token.id) {
-                res.status(StatusCodes.UNAUTHORIZED).json({
-                    message: ReasonPhrases.UNAUTHORIZED,
-                });
-                return;
-            }
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        data: post,
+      });
+    };
+  }
 
-            // Delete!
-            const deletedPost = await post.remove();
-            if (!deletedPost) {
-                res.status(StatusCodes.BAD_REQUEST).json({
-                    message: ReasonPhrases.BAD_REQUEST,
-                });
-                return;
-            }
+  indexForum() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
 
-            res.status(StatusCodes.OK).json({
-                message: ReasonPhrases.OK,
-            });
-        };
-    }
+      // Parse request param
+      const forumID = parseInt(req.params.id);
 
+      const posts = await Post.createQueryBuilder("post")
+        .select([
+          "post.postID",
+          "post.author_id",
+          "post.created_at",
+          "post.content",
+        ])
+        .where("post.forumID = :forumID", {
+          forumID: forumID,
+        })
+        .getMany();
+
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        data: posts,
+      });
+    };
+  }
+
+  update() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+
+      const id = parseInt(req.params.id);
+      const { content } = req.body;
+
+      const post = await Post.findOneBy({
+        id: id,
+      });
+
+      if (!post) {
+        res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+        });
+        return;
+      }
+      if (post.author_id != token.id) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+
+      const upPost = new Post();
+      upPost.id = id;
+      upPost.author_id = post.author_id;
+      upPost.created_at = post.created_at;
+      upPost.updated_at = new Date();
+      upPost.post_id = post.post_id;
+      upPost.forum_id = post.forum_id;
+      upPost.content = content;
+
+      // Update
+      const updatedPost = await upPost.save();
+      if (!updatedPost) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+        });
+        return;
+      }
+
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+      });
+    };
+  }
+
+  delete() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+
+      // Parse request param
+      const id = parseInt(req.params.id);
+
+      const post = await Post.findOneBy({
+        id: id,
+      });
+
+      // Apabila tidak ditemukan ...
+      if (!post) {
+        res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+        });
+        return;
+      }
+      if (post.author_id != token.id) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+      // Delete!
+      const deletedPost = await post.remove();
+      if (!deletedPost) {
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+        });
+        return;
+      }
+
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+      });
+    };
+  }
 }

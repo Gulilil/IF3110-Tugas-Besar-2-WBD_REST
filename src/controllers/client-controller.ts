@@ -76,9 +76,8 @@ export class ClientController {
 
   store() {
     return async (req: Request, res: Response) => {
-      const { email, username, image, password }: StoreRequest = req.body;
-      console.log(email, username, image, password);
-      if (!username || !password) {
+      const { email, username, password }: StoreRequest = req.body;
+      if (!email || !username || !password) {
         res.status(StatusCodes.BAD_REQUEST).json({
           message: ReasonPhrases.BAD_REQUEST,
         });
@@ -89,7 +88,7 @@ export class ClientController {
       client.email = email;
       client.username = username;
       client.password = password;
-      client.image = image;
+      client.image = "";
       client.linked = false;
       client.follower_count = 0;
 
@@ -154,5 +153,37 @@ export class ClientController {
         id: token.id,
       });
     };
+  }
+
+  update(){
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+      const { email, username, image, password }: StoreRequest = req.body;
+      const id = token.id;
+
+      const upClient = new Client();
+      upClient.id = id;
+      upClient.email = email;
+      upClient.username = username;
+      upClient.password = password;
+      upClient.image = image;
+
+      const updatedClient = await upClient.save();
+      if (!updatedClient){
+        res.status(StatusCodes.BAD_REQUEST).json({
+          message: ReasonPhrases.BAD_REQUEST,
+        });
+        return;
+      }
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+      });
+    }
   }
 }

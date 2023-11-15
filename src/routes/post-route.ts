@@ -30,12 +30,22 @@ export class PostRoute {
             .get(
                 "/post/:id",
                 this.authenticationMiddleware.authenticate(),
-                this.postController.indexForum()
+                this.postController.index()
             )
+            .get(
+              "/post/forum/:id",
+              this.authenticationMiddleware.authenticate(),
+              this.postController.indexForum()
+          )
             .delete(
                 "/post/:id",
                 this.authenticationMiddleware.authenticate(),
                 this.postController.delete()
+            )
+            .put(
+              "/post/:id",
+              this.authenticationMiddleware.authenticate(),
+              this.postController.update()
             )
     }
 }
