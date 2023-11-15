@@ -27,11 +27,15 @@ Here are the requirements to run the program
 Here are the packages used in the program
 | Packages | Reference Link | Additional Description |
 |----------|------------------------|----|
+| nodemon | [nodemon](https://www.npmjs.com/package//nodemon) | `npm install --save-dev nodemon` |
 | dotenv  | [dotenv](https://www.npmjs.com/package/dotenv)  | |
 | pg    | [pg](https://www.npmjs.com/package/pg)| `npm i --save-dev @types/pg` |
 
 ## **Installation Guide**
 
+psql -h postgres_wbd_rest -U postgres -d wbd_rest
+
+select event_object_table, trigger_name from information_schema.triggers;
 
 ## **Execution Guide**
 

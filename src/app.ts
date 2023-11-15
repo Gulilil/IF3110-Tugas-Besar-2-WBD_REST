@@ -12,6 +12,7 @@ import { PostRoute } from "./routes/post-route";
 import { FollowRoute } from "./routes/follow-route";
 import { SoapRoute } from "./routes/soap-route";
 import { DatabaseSetup } from "./config/db-setup";
+import { seedDatabase } from "./config/db-seeding";
 
 export class App {
   dataSource: DataSource;
@@ -43,35 +44,22 @@ export class App {
     );
   }
 
+
   run() {
     this.dataSource
-      .initialize()
-      .then(void DatabaseSetup());
-
-    try {
-      async () => {
-        this.server.listen(serverConfig.port, () => {
-          console.log(`Server is running on port: ${serverConfig.port}`);
+        .initialize()
+        .then( void DatabaseSetup())
+        .then(async () => {
+            this.server.listen(serverConfig.port, () => {
+                console.log(
+                    `Server is running on port: ${serverConfig.port}`
+                );
+            });
+        })
+        .catch((error) => {
+            console.log(error);
         });
-      };
-    } catch (error) {
-      console.log(error);
-    }
   }
 
-  //   run() {
-  //     this.dataSource
-  //         .initialize()
-  //         .then( void DatabaseSetup())
-  //         .then(async () => {
-  //             this.server.listen(serverConfig.port, () => {
-  //                 console.log(
-  //                     `Server is running on port: ${serverConfig.port}`
-  //                 );
-  //             });
-  //         })
-  //         .catch((error) => {
-  //             console.log(error);
-  //         });
-  // }
+
 }
