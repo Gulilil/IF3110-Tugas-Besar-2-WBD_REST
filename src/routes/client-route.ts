@@ -17,6 +17,7 @@ export class ClientRoute {
             .post("/client/token", this.clientController.token())
             .post("/client", this.clientController.store())
             .get("/client", this.clientController.index())
+            .get("/client/:id", this.clientController.getUser())
             .get(
                 "/client/check", 
                 this.authenticationMiddleware.authenticate(),

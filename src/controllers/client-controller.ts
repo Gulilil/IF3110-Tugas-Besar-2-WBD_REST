@@ -140,6 +140,26 @@ export class ClientController {
     };
   }
 
+  getUser() {
+    return async (req: Request, res: Response) => {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      const client = await Client.createQueryBuilder("client")
+        .select(["client.email", "client.username", "client.password", "client.image", "client.linked", "client.follower_count"])
+        .where("client.id = :id", { id })
+        .getOne();
+      
+      res.status(StatusCodes.OK).json({
+        message: ReasonPhrases.OK,
+        data: client,
+      });
+    };
+  }
+  
+
   check() {
     return async (req: Request, res: Response) => {
       const { token } = req as AuthRequest;
