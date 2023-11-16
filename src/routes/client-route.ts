@@ -19,7 +19,9 @@ export class ClientRoute {
             .get("/client", 
                 this.authenticationMiddleware.authenticate(),
                 this.clientController.index())
-            .get("/client/:id", this.clientController.getUser())
+            .get("/client/user", 
+                this.authenticationMiddleware.authenticate(),
+                this.clientController.getUser())
             .get(
                 "/client/check", 
                 this.authenticationMiddleware.authenticate(),
