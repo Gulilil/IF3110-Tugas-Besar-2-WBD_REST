@@ -4,7 +4,6 @@ import { AuthRequest } from "../middlewares/authentication-middleware";
 
 import { Forum } from "../models/forum-model";
 
-import { SOAPService } from "../services/soap-services";
 
 
 export class ForumController {

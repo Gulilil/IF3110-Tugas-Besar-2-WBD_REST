@@ -1,5 +1,5 @@
 const generateHost = () => {
-    return process.env.SOAP_BASE_HOST ? process.env.SOAP_BASE_HOST : "localhost";
+    return process.env.SOAP_BASE_HOST ? process.env.SOAP_BASE_HOST : "host.docker.internal";
 };
 
 const generatePort = () => {
@@ -9,5 +9,5 @@ const generatePort = () => {
 export const soapConfig: {host : string, port: number, key: string } = {
     host: generateHost(),
     port: generatePort(),
-    key: process.env.SOAP_KEY ?? "bebf9c5b-d020-429b-a2df-fc3fa5e61129"
+    key: process.env.SOAP_KEY ?? "REST"
 };

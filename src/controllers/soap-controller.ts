@@ -6,225 +6,196 @@ import { soapConfig } from "../config/soap-config";
 import axios from "axios";
 import xml2js from "xml2js";
 
-interface SubscriptionRequest {
-    creatorID: number;
-    subscriberID: number;
+const SOAP_HEADERS = 
+    {
+      "Content-Type": "text/xml",
+      "X-API-KEY" : soapConfig.key,
+    };
+
+interface ReferenceRequest {
+    forumAccountId: number;
+    referralCode : string;
 }
 
-interface SubscriptionData {
-    creatorID: number;
-    subscriberID: number;
-    creatorName: string;
-    subscriberName: string;
+interface ReferenceData {
+    id : number;
+    animeAccountId: number;
+    forumAccountId: number;
+    referralCode: string;
+    point: number;
 }
 
 export class SoapController {
-    // accept() {
-    //     return async (req: Request, res: Response) => {
-    //         const { token } = req as AuthRequest;
-    //         if (!token || !token.isAdmin) {
-    //             // Endpoint hanya bisa diakses oleh admin
-    //             res.status(StatusCodes.UNAUTHORIZED).json({
-    //                 message: ReasonPhrases.UNAUTHORIZED,
-    //             });
-    //             return;
-    //         }
+      link (){
+        return async (req: Request, res: Response) => {
+          const { token } = req as AuthRequest;
+          if (!token){
+            res.status(StatusCodes.UNAUTHORIZED).json({
+              message: ReasonPhrases.UNAUTHORIZED,
+            });
+            return;
+          }
 
-    //         // Parse request body
-    //         const { creatorID, subscriberID }: SubscriptionRequest = req.body;
+          const forumAccountId = token.id;
+          const { referralCode} : ReferenceRequest = req.body;
+          const reqParam =`<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+                            <Body>
+                                <updateReferenceEstablishLink xmlns="http://service.wbd_soap.com/">
+                                    <arg0 xmlns="">${forumAccountId}</arg0>
+                                    <arg1 xmlns="">${referralCode}</arg1>
+                                </updateReferenceEstablishLink>
+                            </Body>
+                          </Envelope>`;
 
-    //         try {
-    //             const response = await axios.post<string>(
-    //                 `http://${soapConfig.host}:${soapConfig.port}/api/subscribe`,
-    //                 `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
-    //                     <Body>
-    //                         <approveSubscribe xmlns="http://service.binotify/">
-    //                             <arg0 xmlns="">${creatorID}</arg0>
-    //                             <arg1 xmlns="">${subscriberID}</arg1>
-    //                             <arg2 xmlns="">${soapConfig.key}</arg2>
-    //                         </approveSubscribe>
-    //                     </Body>
-    //                 </Envelope>`,
-    //                 {
-    //                     headers: {
-    //                         "Content-Type": "text/xml",
-    //                     },
-    //                 }
-    //             );
-    //             const xml = await xml2js.parseStringPromise(response.data);
-    //             const result =
-    //                 xml["S:Envelope"]["S:Body"][0][
-    //                     "ns2:approveSubscribeResponse"
-    //                 ][0].return[0];
+          try {
+            const response = await axios.post<string>(
+              `http://${soapConfig.host}:${soapConfig.host}/api/reference`,
+              reqParam,
+              {
+                headers: SOAP_HEADERS,
+              }
+            );
+            const xml = await xml2js.parseStringPromise(response.data);
+            const result = 
+              xml["S:Envelope"]["S:Body"][0]["ns2:updateReferenceEstablishLinkResponse"][0].return[0];
+            
+            if (result.include("Successfully")){
+              res.status(StatusCodes.OK).json({
+                message: result,
+              })
+            } else if (result.include("Invalid")){
+              res.status(StatusCodes.UNAUTHORIZED).json({
+                message: result,
+              })
+            } else if (result.include("not found")){
+              res.status(StatusCodes.NOT_FOUND).json({
+                message: result,
+              })
+            } else {
+              res.status(StatusCodes.BAD_REQUEST).json({
+                message: result,
+              })
+            }
+          } catch (error){
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+              message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+            });
+            return;
+          }
+        }
+      }
 
-    //             if (result === "Subscription not found") {
-    //                 res.status(StatusCodes.NOT_FOUND).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             } else if (result === "Subscription accepted") {
-    //                 res.status(StatusCodes.OK).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             } else {
-    //                 res.status(StatusCodes.BAD_REQUEST).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             }
-    //         } catch (error) {
-    //             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //                 message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-    //             });
-    //             return;
-    //         }
-    //     };
-    // }
+      get (){
+        return async (req: Request, res: Response) => {
+          const { token } = req as AuthRequest;
+          if (!token){
+            res.status(StatusCodes.UNAUTHORIZED).json({
+              message: ReasonPhrases.UNAUTHORIZED,
+            });
+            return;
+          }
+  
+          const forumAccountId = token.id;
+          const reqParam = `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+                                <Body>
+                                    <giveReferenceDataWithForumAccountID xmlns="http://service.wbd_soap.com/">
+                                        <arg0 xmlns="">${forumAccountId}</arg0>
+                                    </giveReferenceDataWithForumAccountID>
+                                </Body>
+                            </Envelope>`;
+          try {
+            const response = await axios.post<string>(
+              `http://${soapConfig.host}:${soapConfig.host}/api/reference`,
+              reqParam,
+              {
+                headers: SOAP_HEADERS,
+              }
+            );
+            console.log(response);
 
-    // reject() {
-    //     return async (req: Request, res: Response) => {
-    //         const { token } = req as AuthRequest;
-    //         if (!token || !token.isAdmin) {
-    //             // Endpoint hanya bisa diakses oleh admin
-    //             res.status(StatusCodes.UNAUTHORIZED).json({
-    //                 message: ReasonPhrases.UNAUTHORIZED,
-    //             });
-    //             return;
-    //         }
+            const xml = await xml2js.parseStringPromise(response.data);
+            const result = 
+              xml["S:Envelope"]["S:Body"][0]["ns2:giveReferenceDataWithForumAccountIDResponse"][0].return[0];
+            
+            if (result.include("Invalid")){
+              res.status(StatusCodes.UNAUTHORIZED).json({
+                message: result,
+              })
+              return
+            }
 
-    //         // Parse request body
-    //         const { creatorID, subscriberID }: SubscriptionRequest = req.body;
+            const obj = JSON.parse(result);
+            const data = obj.data;
+            if (data.length == 0){
+              res.status(StatusCodes.NOT_FOUND).json({
+                message: "Not Found",
+              })
+            } else {
+              res.status(StatusCodes.OK).json({
+                message: data[0],
+              })
+            }
+          } catch (error){
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+              message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+            });
+            return;
+          }
+        }
+      }
 
-    //         try {
-    //             const response = await axios.post<string>(
-    //                 `http://${soapConfig.host}:${soapConfig.port}/api/subscribe`,
-    //                 `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
-    //                     <Body>
-    //                         <rejectSubscribe xmlns="http://service.binotify/">
-    //                             <arg0 xmlns="">${creatorID}</arg0>
-    //                             <arg1 xmlns="">${subscriberID}</arg1>
-    //                             <arg2 xmlns="">${soapConfig.key}</arg2>
-    //                         </rejectSubscribe>
-    //                     </Body>
-    //                 </Envelope>`,
-    //                 {
-    //                     headers: {
-    //                         "Content-Type": "text/xml",
-    //                     },
-    //                 }
-    //             );
-    //             const xml = await xml2js.parseStringPromise(response.data);
-    //             const result =
-    //                 xml["S:Envelope"]["S:Body"][0][
-    //                     "ns2:rejectSubscribeResponse"
-    //                 ][0].return[0];
+      unlink (){
+        return async (req: Request, res: Response) => {
+          const { token } = req as AuthRequest;
+          if (!token){
+            res.status(StatusCodes.UNAUTHORIZED).json({
+              message: ReasonPhrases.UNAUTHORIZED,
+            });
+            return;
+          }
 
-    //             if (result === "Subscription not found") {
-    //                 res.status(StatusCodes.NOT_FOUND).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             } else if (result === "Subscription rejected") {
-    //                 res.status(StatusCodes.OK).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             } else {
-    //                 res.status(StatusCodes.BAD_REQUEST).json({
-    //                     message: result,
-    //                 });
-    //                 return;
-    //             }
-    //         } catch (error) {
-    //             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //                 message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-    //             });
-    //             return;
-    //         }
-    //     };
-    // }
 
-    // index() {
-    //     return async (req: Request, res: Response) => {
-    //         const { token } = req as AuthRequest;
-    //         if (!token || !token.isAdmin) {
-    //             // Endpoint hanya bisa diakses oleh admin
-    //             res.status(StatusCodes.UNAUTHORIZED).json({
-    //                 message: ReasonPhrases.UNAUTHORIZED,
-    //             });
-    //             return;
-    //         }
+          const forumAccountId = token.id;
+          const reqParam = `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
+                                <Body>
+                                    <updateReferenceUnlink xmlns="http://service.wbd_soap.com/">
+                                        <arg0 xmlns="">${forumAccountId}</arg0>
+                                    </updateReferenceUnlink>
+                                </Body>
+                            </Envelope>`;
 
-    //         const page = parseInt((req.query?.page || "1") as string);
-    //         const pageSize = parseInt((req.query?.pageSize || "5") as string);
-    //         let subscriptionData: SubscriptionData[] = [];
-    //         try {
-    //             const response = await axios.post<string>(
-    //                 `http://${soapConfig.host}:${soapConfig.port}/api/subscribe`,
-    //                 `<Envelope xmlns="http://schemas.xmlsoap.org/soap/envelope/">
-    //                     <Body>
-    //                         <getAllReqSubscribe xmlns="http://service.binotify/">
-    //                             <arg0 xmlns="">${page}</arg0>
-    //                             <arg1 xmlns="">${pageSize}</arg1>
-    //                             <arg2 xmlns="">${soapConfig.key}</arg2>
-    //                         </getAllReqSubscribe>
-    //                     </Body>
-    //                 </Envelope>`,
-    //                 {
-    //                     headers: {
-    //                         "Content-Type": "text/xml",
-    //                     },
-    //                 }
-    //             );
-    //             const xml = await xml2js.parseStringPromise(response.data);
-    //             const pageCount =
-    //                 xml["S:Envelope"]["S:Body"][0][
-    //                     "ns2:getAllReqSubscribeResponse"
-    //                 ][0].return[0].pageCount[0];
-    //             if (pageCount === "0") {
-    //                 res.status(StatusCodes.OK).json({
-    //                     message: "No subscription request found",
-    //                     data: subscriptionData,
-    //                     pageCount: pageCount,
-    //                 });
-    //                 return;
-    //             }
-    //             const results =
-    //                 xml["S:Envelope"]["S:Body"][0][
-    //                     "ns2:getAllReqSubscribeResponse"
-    //                 ][0].return[0].data;
+          try {
+            const response = await axios.post<string>(
+              `http://${soapConfig.host}:${soapConfig.host}/api/reference`,
+              reqParam,
+              {
+                headers: SOAP_HEADERS,
+              }
+            );
+            const xml = await xml2js.parseStringPromise(response.data);
+            const result = 
+              xml["S:Envelope"]["S:Body"][0]["ns2:updateReferenceUnlinkResponse"][0].return[0];
+            
+            if (result.include("Successfully")){
+              res.status(StatusCodes.OK).json({
+                message: result,
+              })
+            } else if (result.include("Invalid")){
+              res.status(StatusCodes.UNAUTHORIZED).json({
+                message: result,
+              })
+            } else {
+              res.status(StatusCodes.BAD_REQUEST).json({
+                message: result,
+              })
+            }
+          } catch (error){
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+              message: ReasonPhrases.INTERNAL_SERVER_ERROR,
+            });
+            return;
+          }
+        }
+      }
 
-    //             if (!results) {
-    //                 res.status(StatusCodes.OK).json({
-    //                     message: ReasonPhrases.OK,
-    //                     data: [],
-    //                     totalPage: pageCount,
-    //                 });
-    //                 return;
-    //             }
-
-    //             results.forEach((result: any) => {
-    //                 subscriptionData.push({
-    //                     creatorID: result.creatorID[0],
-    //                     subscriberID: result.subscriberID[0],
-    //                     creatorName: result.creatorName[0],
-    //                     subscriberName: result.subscriberName[0],
-    //                 });
-    //             });
-
-    //             res.status(StatusCodes.OK).json({
-    //                 message: ReasonPhrases.OK,
-    //                 data: subscriptionData,
-    //                 totalPage: pageCount,
-    //             });
-    //             return;
-    //         } catch (error) {
-    //             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-    //                 message: ReasonPhrases.INTERNAL_SERVER_ERROR,
-    //             });
-    //             return;
-    //         }
-    //     };
-    // }
 }
