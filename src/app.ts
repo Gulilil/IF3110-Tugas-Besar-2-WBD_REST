@@ -49,7 +49,7 @@ export class App {
     this.dataSource
         .initialize()
         .then( void DatabaseSetup())
-        .then( void seedDatabase())
+        // .then( void seedDatabase()) // Only activate if needed
         .then(async () => {
             this.server.listen(serverConfig.port, () => {
                 console.log(
