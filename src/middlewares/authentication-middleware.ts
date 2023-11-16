@@ -36,6 +36,7 @@ export class AuthenticationMiddleware {
                 res.status(StatusCodes.UNAUTHORIZED).json({
                     message: ReasonPhrases.UNAUTHORIZED,
                 });
+                return;
             }
         };
     }
