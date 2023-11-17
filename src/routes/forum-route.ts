@@ -27,6 +27,11 @@ export class ForumRoute {
                 this.authenticationMiddleware.authenticate(),
                 this.forumController.index()
             )
+            .get(
+                "/forum/:id",
+                this.authenticationMiddleware.authenticate(),
+                this.forumController.getForum()
+            )
             .delete(
                 "/forum/:id",
                 this.authenticationMiddleware.authenticate(),

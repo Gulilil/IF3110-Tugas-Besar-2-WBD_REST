@@ -52,17 +52,43 @@ export class ForumController {
                 });
                 return;
             }
+            
     
             const forums = await Forum.createQueryBuilder("forum")
-                .select(["forum.forum_id", "forum.title", "forum.created_at", "forum.post_count"])
-                .where("forum.author_id = :id", {
-                    id: token.id,
-                })
+                .leftJoinAndSelect("forum.client", "client")
+                .select(["client.username", "forum.id", "forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
+                .where("client.id = forum.author_id")
                 .getMany();
-    
+                
             res.status(StatusCodes.OK).json({
                 message: ReasonPhrases.OK,
                 data: forums,
+            });
+        };
+    }
+
+    getForum() {
+        return async (req: Request, res: Response) => {
+            const { token } = req as AuthRequest;
+            if (!token) {
+                res.status(StatusCodes.UNAUTHORIZED).json({
+                    message: ReasonPhrases.UNAUTHORIZED,
+                });
+                return;
+            }
+
+            const id = parseInt(req.params.id);
+    
+            const forum = await Forum.createQueryBuilder("forum")
+                .select(["forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
+                .where("forum.id = :id", { id })
+                .getMany();
+
+            
+    
+            res.status(StatusCodes.OK).json({
+                message: ReasonPhrases.OK,
+                data: forum,
             });
         };
     }
