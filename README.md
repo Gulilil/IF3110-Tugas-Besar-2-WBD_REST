@@ -35,7 +35,7 @@ Here are the packages used in the program
 | xml-js | [xml-js](https://www.npmjs.com/package/xml-js) | `npm install --save xml-js` |
 
 ## **Database Schema**
-Will be added later
+![Database](./screenshot/database.png)
 
 
 ## **Endpoints**
@@ -79,13 +79,15 @@ https://gitlab.informatika.org/if3110-2023-01-08/if3110-tugas-besar-2-wbd_rest.g
 2. Move into the directory folder
 3. Run the docker using following command
 ```
-docker compose up --build
+docker-compose up --build
 ```
+4. Server could be accessed using browser in URL `http://localhost:3000/api`.
+
 
 
 ## **Workload Distribution**
 | Name                     | Student ID | Functionality | 
 |--------------------------|------------|-------------|
 | Irfan                    | 10023176   |  |
-| Bagas Aryo Seto          | 13521081   | Controller, models, routes, config, jwt |
-| Juan Christopher Santoso | 13521116   | Database connection, seeding, soap connection |
+| Bagas Aryo Seto          | 13521081   | <ul> <li> Client, Follow, Forum, Post Controller <li> Client, Follow, Forum, Post Models <li> Client, Followm Forum, Post Routes <li> Data, JWT config <li> Middleware </ul> |
+| Juan Christopher Santoso | 13521116   | <ul> <li> Database setup, connection, function, and triggers <li> Dockerize <li> Database seeding <li> Soap connection <li> Database setup <li> PHP Controller <li> Soap Controller <li> Adjusting Models <li> Soap Route </ul> |
