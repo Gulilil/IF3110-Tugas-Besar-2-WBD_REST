@@ -12,7 +12,7 @@
 * [Workload Distribution](#workload-distribution)
 
 ## **Program Description**
-
+REST protocol based Web Service that provides the service for Web Method for **InfoAnimeMasse** app.
 
 ## **Program Requirement**
 Here are the requirements to run the program
@@ -39,7 +39,6 @@ psql -h postgres_wbd_rest -U postgres -d wbd_rest
 select event_object_table, trigger_name from information_schema.triggers;
 
 ## **Execution Guide**
-
 
 
 ## **Workload Distribution**
