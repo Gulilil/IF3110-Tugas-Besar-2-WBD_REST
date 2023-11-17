@@ -7,6 +7,8 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  BeforeInsert,
+  Repository,
 } from "typeorm";
 
 import { Client } from "./client-model";
@@ -42,4 +44,14 @@ export class Post extends BaseEntity {
   @ManyToOne(() => Forum, (forum) => forum.id, {onDelete: "CASCADE", onUpdate:"CASCADE"})
   @JoinColumn({ name: "forum_id" })
   forum: Forum;
+
+  @BeforeInsert()
+  async assignPostId() {
+    const lastPost = await Post.getRepository().findOne({
+      where: { forum_id: this.forum_id },
+      order: { post_id: 'DESC' }
+    });
+
+    this.post_id = lastPost ? lastPost.post_id + 1 : 1;
+  }
 }

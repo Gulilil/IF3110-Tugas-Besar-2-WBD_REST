@@ -38,6 +38,7 @@ export class ForumController {
 
             res.status(StatusCodes.CREATED).json({
                 message: ReasonPhrases.CREATED,
+                id: newForum.id,
             });
         };
     }
@@ -58,7 +59,7 @@ export class ForumController {
                 .select(["client.username", "forum.id", "forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
                 .where("client.id = forum.author_id")
                 .getMany();
-                
+
             res.status(StatusCodes.OK).json({
                 message: ReasonPhrases.OK,
                 data: forums,
