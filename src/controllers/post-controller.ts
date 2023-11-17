@@ -156,10 +156,11 @@ export class PostController {
       }
 
       const id = parseInt(req.params.id);
-      const { content } = req.body;
+      const { forum_id, content } = req.body;
 
       const post = await Post.findOneBy({
-        id: id,
+        post_id: id,
+        forum_id: forum_id,
       });
 
       if (!post) {
@@ -176,12 +177,12 @@ export class PostController {
       }
 
       const upPost = new Post();
-      upPost.id = id;
+      upPost.id = post.id;
       upPost.author_id = post.author_id;
       upPost.created_at = post.created_at;
       upPost.updated_at = new Date();
-      upPost.post_id = post.post_id;
-      upPost.forum_id = post.forum_id;
+      upPost.post_id = id;
+      upPost.forum_id = forum_id;
       upPost.content = content;
 
       // Update
