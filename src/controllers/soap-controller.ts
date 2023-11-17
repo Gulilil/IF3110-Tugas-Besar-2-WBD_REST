@@ -17,13 +17,6 @@ interface ReferenceRequest {
     referralCode : string;
 }
 
-interface ReferenceData {
-    id : number;
-    animeAccountId: number;
-    forumAccountId: number;
-    referralCode: string;
-    point: number;
-}
 
 export class SoapController {
       link (){

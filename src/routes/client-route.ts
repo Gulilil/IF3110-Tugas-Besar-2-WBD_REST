@@ -22,6 +22,9 @@ export class ClientRoute {
             .get("/client/user", 
                 this.authenticationMiddleware.authenticate(),
                 this.clientController.getUser())
+            .get("/client/other/:id", 
+                this.authenticationMiddleware.authenticate(),
+                this.clientController.getUserById())
             .get(
                 "/client/check", 
                 this.authenticationMiddleware.authenticate(),
