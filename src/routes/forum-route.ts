@@ -19,6 +19,11 @@ export class ForumRoute {
                 this.authenticationMiddleware.authenticate(),
                 this.forumController.store()
             )
+            .post(
+              "/forum/filter",
+              this.authenticationMiddleware.authenticate(),
+              this.forumController.getForumFilter()
+            )
             .get(
                 "/forum",
                 this.authenticationMiddleware.authenticate(),
@@ -34,5 +39,6 @@ export class ForumRoute {
                 this.authenticationMiddleware.authenticate(),
                 this.forumController.delete()
             )
+
     }
 }

@@ -1,5 +1,5 @@
 const generateHost = () => {
-    return process.env.SOAP_BASE_HOST ? process.env.SOAP_BASE_HOST : "host.docker.internal";
+    return process.env.SOAP_BASE_HOST ? process.env.SOAP_BASE_HOST : "localhost";
 };
 
 const generatePort = () => {
