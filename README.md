@@ -6,7 +6,8 @@
 * [Program Description](#program-description)
 * [Required Program](#required-program)
 * [Used Packages](#used-packages)
-* [Installation Guide](#installation-guide)
+* [Database Schema](#database-schema)
+* [Endpoints](#endpoints)
 * [Execution Guide](#execution-guide)
 * [Progress Report](#progress-report)
 * [Workload Distribution](#workload-distribution)
@@ -34,11 +35,11 @@ Here are the packages used in the program
 | easy-soap-request | [easy-soap-request](https://www.npmjs.com/package/easy-soap-request)  | `npm install easy-soap-request` |
 | xml-js | [xml-js](https://www.npmjs.com/package/xml-js) | npm install --save xml-js |
 
-## **Installation Guide**
+## **Endpoints**
+Will be added later
 
-psql -h postgres_wbd_rest -U postgres -d wbd_rest
-
-select event_object_table, trigger_name from information_schema.triggers;
+## **Database Schema**
+Will be added later
 
 ## **Execution Guide**
 1. Run `docker-compose up` in REST _directory_ terminal.
@@ -55,8 +56,8 @@ docker-compose down
 ![Database](./screenshot/ss.png)
 
 ## **Workload Distribution**
-| Name                     | Student ID | Fungsionalitas | 
+| Name                     | Student ID | Functionality | 
 |--------------------------|------------|-------------|
 | Irfan                    | 10023176   |  |
-| Bagas Aryo Seto          | 13521081   | <ul> <li> SPA REST Implementations <li> Controllers <li> Models <li> Authentification <li> Routing </ul> |
-| Juan Christopher Santoso | 13521116   | <ul> <li> SOAP REST Connection <li> Config <li> Database Schema <li> Login & Sign Up <li> Follow </ul> |
+| Bagas Aryo Seto          | 13521081   | Controller, models, routes, config, jwt |
+| Juan Christopher Santoso | 13521116   | Database connection, seeding, soap connection |
