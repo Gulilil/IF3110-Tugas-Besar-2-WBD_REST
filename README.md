@@ -41,11 +41,22 @@ psql -h postgres_wbd_rest -U postgres -d wbd_rest
 select event_object_table, trigger_name from information_schema.triggers;
 
 ## **Execution Guide**
+1. Run `docker-compose up` in REST _directory_ terminal.
+```
+docker-compose up --build
+```
+2. Server could be accessed using browser in URL `http://localhost:3000/api`.
+3. Server could be shut down using command `docker-compose down` in REST _directory_ terminal.
+```
+docker-compose down
+```
 
+## **Database Schema**
+![Database](./screenshot/ss.png)
 
 ## **Workload Distribution**
 | Name                     | Student ID | Fungsionalitas | 
 |--------------------------|------------|-------------|
 | Irfan                    | 10023176   |  |
-| Bagas Aryo Seto          | 13521081   |  |
-| Juan Christopher Santoso | 13521116   |  |
+| Bagas Aryo Seto          | 13521081   | <ul> <li> SPA REST Implementations <li> Controllers <li> Models <li> Authentification <li> Routing </ul> |
+| Juan Christopher Santoso | 13521116   | <ul> <li> SOAP REST Connection <li> Config <li> Database Schema <li> Login & Sign Up <li> Follow </ul> |
