@@ -1,17 +1,14 @@
 import { Router } from "express";
 
 import { AuthenticationMiddleware } from "../middlewares/authentication-middleware";
-import { SOAPMiddleware } from "../middlewares/soap-middleware";
 import { PostController } from "../controllers/post-controller";
 
 export class PostRoute {
     authenticationMiddleware: AuthenticationMiddleware;
-    soapMiddleware: SOAPMiddleware;
     postController: PostController;
 
     constructor() {
         this.authenticationMiddleware = new AuthenticationMiddleware();
-        this.soapMiddleware = new SOAPMiddleware();
         this.postController = new PostController();
     }
 

@@ -26,7 +26,7 @@ export class AuthenticationMiddleware {
                     return;
                 }
 
-                (req as AuthRequest).token = jwt.verify(
+               (req as AuthRequest).token = jwt.verify(
                     token,
                     jwtConfig.secret
                 ) as AuthToken;

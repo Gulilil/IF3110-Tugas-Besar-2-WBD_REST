@@ -39,8 +39,8 @@ export class App {
       clientRoute.getRoute(),
       forumRoute.getRoute(),
       postRoute.getRoute(),
-      followRoute.getRoute()
-      // soapRoute.getRoute()
+      followRoute.getRoute(),
+      soapRoute.getRoute()
     );
   }
 
@@ -48,7 +48,7 @@ export class App {
   run() {
     this.dataSource
         .initialize()
-        .then( void DatabaseSetup())
+        // .then( void DatabaseSetup())
         // .then( void seedDatabase()) // Only activate if needed
         .then(async () => {
             this.server.listen(serverConfig.port, () => {

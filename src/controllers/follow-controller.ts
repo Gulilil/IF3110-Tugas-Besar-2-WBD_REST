@@ -5,7 +5,6 @@ import { AuthRequest } from "../middlewares/authentication-middleware";
 import { Client } from "../models/client-model";
 import { Follow } from "../models/follow-model";
 
-import { SOAPService } from "../services/soap-services";
 
 export class FollowController {
   follow() {

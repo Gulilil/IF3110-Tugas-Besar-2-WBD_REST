@@ -30,6 +30,7 @@ Here are the packages used in the program
 | nodemon | [nodemon](https://www.npmjs.com/package//nodemon) | `npm install --save-dev nodemon` |
 | dotenv  | [dotenv](https://www.npmjs.com/package/dotenv)  | |
 | pg    | [pg](https://www.npmjs.com/package/pg)| `npm i --save-dev @types/pg` |
+| axios | [axios](https://www.npmjs.com/package/axios) | `npm install axios` |
 
 ## **Installation Guide**
 

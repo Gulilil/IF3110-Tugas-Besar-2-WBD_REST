@@ -14,11 +14,11 @@ class Database {
   }
 
   constructor() {
-    const dbUsername = process.env.POSTGRES_USER;
-    const dbPassword = process.env.POSTGRES_PASSWORD;
-    const dbName = process.env.POSTGRES_DB;
-    const dbHost = process.env.POSTGRES_HOST;
-    const dbPort = parseInt(process.env.POSTGRES_PORT || "5432");
+    const dbUsername = process.env.POSTGRES_USER || "postgres";
+    const dbPassword = process.env.POSTGRES_PASSWORD || "postgres";
+    const dbName = process.env.POSTGRES_DB || "wbd_rest";
+    const dbHost = process.env.POSTGRES_HOST || "localhost";
+    const dbPort = parseInt(process.env.POSTGRES_PORT || "5432") || 5432;
 
     this.pool = new Pool({
       user: dbUsername,

@@ -1,17 +1,14 @@
 import { Router } from "express";
 
 import { AuthenticationMiddleware } from "../middlewares/authentication-middleware";
-import { SOAPMiddleware } from "../middlewares/soap-middleware";
 import { ForumController } from "../controllers/forum-controller";
 
 export class ForumRoute {
     authenticationMiddleware: AuthenticationMiddleware;
-    soapMiddleware: SOAPMiddleware;
     forumController: ForumController;
 
     constructor() {
         this.authenticationMiddleware = new AuthenticationMiddleware();
-        this.soapMiddleware = new SOAPMiddleware();
         this.forumController = new ForumController();
     }
 
