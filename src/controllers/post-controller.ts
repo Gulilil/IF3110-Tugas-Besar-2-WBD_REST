@@ -118,20 +118,25 @@ export class PostController {
         return;
       }
 
-      // Parse request param
       const forumID = parseInt(req.params.id);
 
       const posts = await Post.createQueryBuilder("post")
+        .leftJoinAndSelect("post.client", "client") // Make sure 'post.client' is the correct relation path
         .select([
-          "post.postID",
+          "post.id",
+          "post.post_id",
+          "post.forum_id",
           "post.author_id",
           "post.created_at",
+          "post.updated_at",
           "post.content",
+          "client.username", 
+          "client.image",
         ])
-        .where("post.forumID = :forumID", {
-          forumID: forumID,
-        })
+        .where("post.forum_id = :forumID", { forumID }) // Use :forumID to replace with forumID value
+        .andWhere("client.id = post.author_id") // This condition might be redundant if 'leftJoinAndSelect' is properly defined
         .getMany();
+      
 
       res.status(StatusCodes.OK).json({
         message: ReasonPhrases.OK,

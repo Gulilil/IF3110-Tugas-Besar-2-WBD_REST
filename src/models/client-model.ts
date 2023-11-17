@@ -40,11 +40,11 @@ export class Client extends BaseEntity {
     @Column()
     follower_count: number;
 
-    // @OneToMany(() => Forum, (forum) => forum.user)
-    // forums: Forum[];
+    @OneToMany(() => Forum, (forum) => forum.client)
+    forums: Forum[];
 
-    // @OneToMany(() => Post, (post) => post.user)
-    // posts: Post[];
+    @OneToMany(() => Post, (post) => post.client)
+    posts: Post[];
 
     // @ManyToMany(() => User, (user) => user.followers)
     // @JoinTable({
