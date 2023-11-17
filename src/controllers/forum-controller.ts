@@ -81,7 +81,7 @@ export class ForumController {
             const forum = await Forum.createQueryBuilder("forum")
                 .select(["forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
                 .where("forum.id = :id", { id })
-                .getMany();
+                .getOne();
 
             
     
