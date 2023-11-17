@@ -7,6 +7,44 @@ import { Follow } from "../models/follow-model";
 
 
 export class FollowController {
+  check(){
+    return async (req: Request, res: Response) => {
+      const {token} = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+
+      const followeeId = parseInt(req.params.followeeId);
+      const id = token.id;
+      if (id === followeeId){
+        res.status(StatusCodes.NOT_ACCEPTABLE).json({
+          message: ReasonPhrases.NOT_ACCEPTABLE,
+        });
+        return;
+      }
+
+      // Check follow
+      const existingFollow = await Follow.findOneBy({
+        follower_id: id,
+        followee_id: followeeId,
+      });
+
+      if (existingFollow){
+        res.status(StatusCodes.OK).json({
+          message: ReasonPhrases.OK,
+        });
+        return;
+      } else {
+        res.status(StatusCodes.NOT_FOUND).json({
+          message:ReasonPhrases.NOT_FOUND
+        });
+        return;
+      }
+    }
+  }
   follow() {
     return async (req: Request, res: Response) => {
       const { token } = req as AuthRequest;

@@ -82,7 +82,7 @@ export class ForumController {
             const forum = await Forum.createQueryBuilder("forum")
                 .select(["forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
                 .where("forum.id = :id", { id })
-                .getMany();
+                .getOne();
 
             
     
@@ -91,6 +91,59 @@ export class ForumController {
                 data: forum,
             });
         };
+    }
+
+    getForumFilter(){
+      return async (req:Request, res:Response) => {
+        const {token} = req as AuthRequest;
+        if (!token){
+          res.status(StatusCodes.UNAUTHORIZED).json({
+            message: ReasonPhrases.UNAUTHORIZED,
+          });
+          return;
+        }
+
+        const {sort, search} = req.body;
+        let sortAttrib ="";
+        let sortType: "ASC" | "DESC" = "ASC";
+        if (sort === "Recent"){
+          sortAttrib = "forum.created_at";
+          sortType = "DESC";
+        } else if (sort === "Replies"){
+          sortAttrib = "forum.post_count";
+          sortType = "DESC";
+        } else if (sort === "Title"){
+          sortAttrib = "forum.title";
+          sortType = "ASC";
+        }
+
+        if (search.length == 0){
+          const forums = await Forum.createQueryBuilder("forum")
+          .select(["forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
+          .orderBy(sortAttrib, sortType)
+          .getMany();
+
+          res.status(StatusCodes.OK).json({
+            message: ReasonPhrases.OK,
+            data: forums,
+          });
+          return;
+        } 
+        else {
+          const forums = await Forum.createQueryBuilder("forum")
+          .select(["forum.title", "forum.author_id", "forum.created_at", "forum.post_count"])
+          .where("forum.title LIKE '%:search%' ", { search })
+          .orderBy(sortAttrib, sortType)
+          .getMany();
+
+          res.status(StatusCodes.OK).json({
+            message: ReasonPhrases.OK,
+            data: forums,
+          });
+          return;
+        }
+
+      }
     }
     
 

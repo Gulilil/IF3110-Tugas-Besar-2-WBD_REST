@@ -14,6 +14,11 @@ export class FollowRoute {
 
     getRoute() {
         return Router()
+            .get(
+              "/follow/:followeeId",
+              this.authenticationMiddleware.authenticate(),
+              this.followController.check()
+            )
             .post(
                 "/follow/:followeeId",
                 this.authenticationMiddleware.authenticate(),

@@ -162,6 +162,38 @@ export class ClientController {
       });
     };
   }
+
+  
+  getUserById() {
+    return async (req: Request, res: Response) => {
+      const { token } = req as AuthRequest;
+      if (!token) {
+        res.status(StatusCodes.UNAUTHORIZED).json({
+          message: ReasonPhrases.UNAUTHORIZED,
+        });
+        return;
+      }
+      const id = parseInt(req.params.id);
+
+      const client = await Client.createQueryBuilder("client")
+        .select(["client.id", "client.email", "client.username", "client.image", "client.linked", "client.follower_count"])
+        .where("client.id = :id", { id })
+        .getOne();
+      
+      if (client){
+        res.status(StatusCodes.OK).json({
+          message: ReasonPhrases.OK,
+          data: client,
+        });
+      } else {
+        res.status(StatusCodes.NOT_FOUND).json({
+          message: ReasonPhrases.NOT_FOUND,
+          data: null,
+        })
+      }
+
+    };
+  }
   
 
   check() {

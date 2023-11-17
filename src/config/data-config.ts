@@ -6,7 +6,7 @@ import { Post } from "../models/post-model";
 import { Follow } from "../models/follow-model";
 
 const generatePostgreHost = () => {
-  return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "localhost";
+  return process.env.POSTGRES_HOST ? process.env.POSTGRES_HOST : "host.docker.internal";
 };
 
 const generatePostgrePort = () => {

@@ -31,6 +31,8 @@ Here are the packages used in the program
 | dotenv  | [dotenv](https://www.npmjs.com/package/dotenv)  | |
 | pg    | [pg](https://www.npmjs.com/package/pg)| `npm i --save-dev @types/pg` |
 | axios | [axios](https://www.npmjs.com/package/axios) | `npm install axios` |
+| easy-soap-request | [easy-soap-request](https://www.npmjs.com/package/easy-soap-request)  | `npm install easy-soap-request` |
+| xml-js | [xml-js](https://www.npmjs.com/package/xml-js) | npm install --save xml-js |
 
 ## **Installation Guide**
 
